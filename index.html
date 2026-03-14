@@ -137,10 +137,9 @@ input[type=range]::-webkit-slider-thumb {
 
 /* NOTE */
 .note {
-  margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
-  color: var(--muted); font-size: 11px; line-height: 2; max-width: 560px;
+  margin-top: 48px;
+  color: var(--muted); font-size: 10px; opacity: 0.5; letter-spacing: 0.06em;
 }
-.note em { color: var(--text); font-style: normal; }
 
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 .pdot {
@@ -157,7 +156,6 @@ input[type=range]::-webkit-slider-thumb {
 <header>
   <div class="header-left">
     <h1>Years <em>in Sound</em></h1>
-    <p class="subtitle">GitHub contribution in sound</p>
   </div>
   <div class="header-right">
     erica-cheong_clsa<br>
@@ -169,7 +167,7 @@ input[type=range]::-webkit-slider-thumb {
 <!-- GRID -->
 <div class="grid-section">
   <div class="grid-header">
-    <span class="grid-label">Contribution grid — each column is one week</span>
+    <span class="grid-label">GitHub Contribution grid — each column is one week</span>
     <div class="legend">
       <span>Less</span>
       <span class="lsq" style="background:var(--gh-0);border:1px solid rgba(0,0,0,0.1)"></span>
@@ -201,9 +199,7 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 
-<div class="note">
-  <em>Years in Sound</em> is a mixed media installation by Erica Cheong. Six years of GitHub contribution data — 2021 to 2026 — are translated into music in real time. Each column (one week) becomes a chord. Contribution level maps to pitch: more activity, higher frequency. Empty days are silence.<br><br>
-</div>
+<div class="note">© 2026 Erica Cheong</div>
 
 </div>
 
