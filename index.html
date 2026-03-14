@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Years in Sound — Erica Cheong</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;1,300&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f9f8f5;
+  --surface: #ffffff;
+  --surface2: #f2f0eb;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1a1916;
+  --muted: #8a8680;
+  --accent: #2d6a4f;
+  --accent2: #52b788;
+  --accent-dim: rgba(45,106,79,0.08);
+  --gh-0: #ebedf0;
+  --gh-1: #9be9a8;
+  --gh-2: #40c463;
+  --gh-3: #30a14e;
+  --gh-4: #216e39;
+}
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  min-height: 100vh;
+}
+.page { max-width: 1160px; margin: 0 auto; padding: 52px 36px 100px; }
+
+/* HEADER */
+header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.header-left h1 {
+  font-family: 'IM Fell English', serif;
+  font-size: clamp(28px, 4.5vw, 48px);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.subtitle { color: var(--muted); font-size: 12px; line-height: 1.7; font-style: italic; max-width: 440px; }
+.header-right {
+  text-align: right;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 2;
+  letter-spacing: 0.06em;
+}
+
+/* GRID */
+.grid-section { margin-bottom: 28px; }
+.grid-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
+}
+.grid-label { font-size: 10px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+.legend { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
+.lsq { width: 10px; height: 10px; border-radius: 2px; }
+.grid-scroll { overflow-x: auto; }
+#grid-canvas { display: block; cursor: crosshair; }
+.week-info {
+  padding: 8px 0 6px;
+  font-size: 11px; color: var(--muted);
+  min-height: 26px;
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+  font-style: italic;
+  transition: color 0.2s;
+}
+.week-info.lit { color: var(--text); }
+
+/* PLAYBACK */
+.playback-bar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 20px; padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.np-wrap { flex: 1; min-width: 180px; }
+.np-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 2px; }
+.np-val { font-family: 'IM Fell English', serif; font-size: 18px; color: var(--accent); font-style: italic; min-height: 22px; }
+.progress-track { flex: 2; min-width: 100px; height: 2px; background: var(--border2); border-radius: 1px; }
+.progress-fill { height: 100%; background: var(--accent2); width: 0%; transition: width 0.1s linear; border-radius: 1px; }
+
+/* CONTROLS */
+.controls {
+  display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 28px;
+  padding: 16px 20px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+}
+.ctrl { display: flex; flex-direction: column; gap: 5px; }
+.ctrl-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+select {
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 5px 9px; border-radius: 4px; outline: none; cursor: pointer;
+}
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 90px; height: 2px; background: var(--border2); border-radius: 1px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; border: 2px solid white;
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.range-row { display: flex; align-items: center; gap: 7px; }
+.rv { font-size: 11px; color: var(--muted); min-width: 20px; }
+
+/* BTNS */
+.btn {
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 7px 16px; border-radius: 4px; cursor: pointer;
+  transition: background 0.12s, border-color 0.12s; letter-spacing: 0.04em;
+}
+.btn:hover { background: var(--surface2); border-color: var(--border2); }
+.btn.primary { border-color: var(--accent); color: var(--accent); }
+.btn.primary:hover { background: var(--accent-dim); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* NOTE */
+.note {
+  margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+  color: var(--muted); font-size: 11px; line-height: 2; max-width: 560px;
+}
+.note em { color: var(--text); font-style: normal; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.pdot {
+  display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); margin-right: 5px;
+  animation: pulse 1s ease-in-out infinite; vertical-align: middle;
+}
+@media(max-width:600px){ .page{padding:24px 16px 60px;} .header-right{text-align:left;} }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="header-left">
+    <h1>Years <em>in Sound</em></h1>
+    <p class="subtitle">GitHub contribution in sound</p>
+  </div>
+  <div class="header-right">
+    erica-cheong_clsa<br>
+    2021 — 2026<br>
+    2,979 contributions
+  </div>
+</header>
+
+<!-- GRID -->
+<div class="grid-section">
+  <div class="grid-header">
+    <span class="grid-label">Contribution grid — each column is one week</span>
+    <div class="legend">
+      <span>Less</span>
+      <span class="lsq" style="background:var(--gh-0);border:1px solid rgba(0,0,0,0.1)"></span>
+      <span class="lsq" style="background:var(--gh-1)"></span>
+      <span class="lsq" style="background:var(--gh-2)"></span>
+      <span class="lsq" style="background:var(--gh-3)"></span>
+      <span class="lsq" style="background:var(--gh-4)"></span>
+      <span>More</span>
+    </div>
+  </div>
+  <div class="grid-scroll"><canvas id="grid-canvas"></canvas></div>
+  <div class="week-info" id="week-info">Hover to inspect a week · Click to hear it · Press Play to hear all years</div>
+</div>
+
+<!-- PLAYBACK -->
+<div class="playback-bar">
+  <button class="btn primary" id="btn-play">▶ Play all years</button>
+  <button class="btn" id="btn-stop" disabled>■ Stop</button>
+  <div style="display:flex;align-items:center;gap:7px;">
+    <span style="font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;">Vol</span>
+    <input type="range" id="volume" min="0" max="100" value="85" step="1">
+    <span class="rv" id="volume-v">85</span>
+  </div>
+  <div class="np-wrap">
+    <div class="np-label">NOW SOUNDING</div>
+    <div class="np-val" id="np-val">—</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="prog"></div></div>
+</div>
+
+
+<div class="note">
+  <em>Years in Sound</em> is a mixed media installation by Erica Cheong. Six years of GitHub contribution data — 2021 to 2026 — are translated into music in real time. Each column (one week) becomes a chord. Contribution level maps to pitch: more activity, higher frequency. Empty days are silence.<br><br>
+</div>
+
+</div>
+
+<script>
+// ── REAL DATA (extracted from screenshots) ────────────────────────────────────
+const YEAR_BREAKS = {2021:0, 2022:53, 2023:106, 2024:159, 2025:212, 2026:265};
+const YEAR_TOTALS = {2021:203, 2022:1673, 2023:1257, 2024:612, 2025:634, 2026:210};
+const MAX_TOTAL = Math.max(...Object.values(YEAR_TOTALS));
+</script>
+<script>
+// Inline the week data
+const RAW_WEEKS=[[0,0,0,0,0,0,4],[0,0,0,0,0,0,4],[4,4,0,0,0,0,0],[4,0,0,0,0,0,0],[4,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[4,0,4,0,4,0,0],[4,0,4,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,3,4,0,0],[3,0,0,0,0,0,0],[3,1,0,3,0,0,0],[4,3,3,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,4,0,0],[0,0,3,3,0,0,0],[0,0,0,0,0,0,4],[0,0,0,0,0,0,4],[4,4,0,0,0,0,0],[4,0,0,0,0,0,0],[4,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[4,0,4,0,4,0,0],[4,0,4,0,0,0,0],[0,0,0,0,0,0,0],[0,1,0,1,1,0,0],[1,1,1,1,1,0,0],[1,1,3,0,1,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[1,1,3,3,0,0,0],[1,1,1,1,1,0,0],[1,1,1,0,0,0,0],[0,1,1,1,0,0,0],[1,1,1,1,0,0,0],[1,1,0,1,0,0,0],[0,1,1,1,1,0,0],[1,1,1,1,1,0,0],[0,0,1,1,1,0,0],[1,3,1,1,0,0,0],[0,1,1,0,1,0,0],[3,3,3,1,1,0,0],[0,1,1,1,3,0,0],[0,3,1,1,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,3,0,0],[3,3,3,3,0,0,0],[3,4,0,3,1,0,0],[0,1,3,1,2,0,0],[3,1,3,1,3,0,0],[0,1,1,1,0,0,0],[1,3,1,1,3,0,0],[0,3,3,1,1,0,0],[1,3,1,3,1,0,0],[1,2,0,0,3,0,0],[0,1,1,3,1,0,0],[3,1,0,1,1,0,0],[1,3,4,3,0,1,0],[2,2,1,0,1,0,0],[4,0,3,0,4,0,0],[1,1,0,2,1,0,0],[0,1,0,1,1,0,0],[3,1,1,0,4,0,0],[0,1,3,1,1,0,0],[0,0,0,0,0,0,4],[0,0,0,0,0,0,4],[4,4,0,0,0,0,0],[4,0,0,0,0,0,0],[4,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[4,0,4,0,4,0,0],[4,0,4,0,0,0,0],[0,3,1,0,1,0,0],[3,1,1,4,1,0,0],[4,1,3,1,0,0,0],[0,0,0,2,1,0,0],[3,1,0,2,3,0,0],[3,4,0,4,1,0,0],[0,3,0,3,3,0,0],[0,0,0,0,3,0,0],[0,0,3,1,0,0,0],[3,1,3,3,1,0,0],[1,1,1,3,1,0,0],[3,3,3,1,3,0,0],[3,2,0,3,3,0,0],[1,3,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,1,3,0,0],[3,3,1,3,4,0,0],[0,3,1,1,1,0,0],[0,1,0,2,0,0,0],[3,3,3,3,3,0,0],[1,3,3,1,0,0,0],[0,3,0,0,1,0,0],[3,2,3,3,3,0,0],[3,3,1,3,1,0,0],[3,4,1,0,2,0,0],[3,3,3,1,1,0,0],[1,1,1,1,1,0,0],[3,1,4,3,1,0,0],[1,2,1,3,3,0,0],[3,1,0,1,3,0,0],[0,1,2,4,3,0,0],[4,3,1,3,1,0,0],[3,1,3,0,1,0,0],[1,3,1,3,3,0,0],[0,1,3,1,2,0,0],[0,0,0,0,0,0,0],[1,0,1,2,1,0,0],[3,1,1,1,4,0,0],[3,1,0,2,0,0,0],[0,3,1,1,1,0,0],[0,0,0,0,0,0,4],[0,0,0,0,0,0,4],[4,4,0,0,0,0,0],[4,0,0,0,0,0,0],[4,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[4,0,4,0,4,0,0],[4,0,4,0,0,0,0],[0,1,1,0,1,0,0],[0,3,0,0,1,0,0],[2,0,1,1,0,0,0],[3,1,3,1,4,0,0],[1,1,0,2,0,0,0],[0,3,3,4,0,0,0],[0,0,1,0,0,0,0],[1,0,3,4,1,0,0],[3,3,4,3,1,0,0],[4,3,4,4,3,0,0],[4,4,3,0,0,0,0],[0,3,3,3,3,0,0],[0,1,3,2,0,0,0],[0,3,1,0,3,0,0],[3,3,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,3,0,0],[3,3,0,0,1,0,0],[3,0,2,2,1,0,0],[1,3,0,3,0,0,0],[1,2,0,4,1,0,0],[0,3,1,4,3,0,0],[1,0,1,1,0,0,0],[0,1,1,3,1,0,0],[0,0,0,0,0,0,0],[0,0,1,0,0,0,0],[0,3,1,3,1,0,0],[3,3,4,3,0,0,0],[3,1,1,1,4,0,0],[3,1,3,0,0,0,0],[1,1,0,4,4,0,0],[0,0,3,0,1,0,0],[1,2,3,2,1,0,0],[3,1,1,1,0,0,0],[0,0,1,3,0,0,0],[0,0,0,1,0,0,0],[0,0,0,0,0,0,0],[3,1,0,0,3,0,0],[3,4,0,2,1,0,0],[3,0,4,0,1,0,0],[0,0,0,0,0,0,4],[0,0,0,0,0,0,4],[4,4,0,0,0,0,0],[4,0,0,0,0,0,0],[4,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[4,0,4,0,4,0,0],[4,0,4,0,0,0,0],[0,0,0,0,1,0,0],[3,1,3,1,4,0,0],[1,0,0,1,1,0,0],[0,1,1,3,1,0,0],[1,1,0,0,0,0,0],[0,0,3,1,0,0,0],[0,1,3,0,0,0,0],[1,3,3,0,1,0,0],[3,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,3,2,1,0,0],[3,1,3,1,1,0,0],[1,3,3,0,3,0,0],[3,0,1,3,0,0,0],[1,1,3,1,0,0,0],[1,0,1,3,0,0,0],[0,3,1,2,0,0,0],[0,0,1,0,1,0,0],[0,2,1,1,1,0,0],[3,1,3,1,0,0,0],[1,0,1,0,0,0,0],[1,1,1,1,1,0,0],[3,0,3,1,1,0,0],[0,1,0,3,1,0,0],[1,1,1,4,0,0,0],[3,1,3,3,4,0,0],[4,0,1,3,1,0,0],[4,3,3,4,3,0,0],[3,4,1,1,3,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[1,1,1,3,1,0,0],[3,1,0,0,3,0,0],[0,0,0,1,0,0,0],[0,0,0,0,1,0,0],[1,0,0,0,3,0,0],[1,0,0,0,0,0,0],[0,1,0,1,3,0,0],[1,0,0,1,0,0,0],[1,3,0,1,0,0,0],[0,0,0,0,0,0,4],[0,0,0,0,0,0,4],[4,4,0,0,0,0,0],[4,0,0,0,0,0,0],[4,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[4,0,4,0,4,0,0],[4,0,4,0,0,0,0],[0,0,0,0,0,0,0],[0,1,1,3,1,0,0],[1,1,1,3,1,0,0],[0,0,0,0,0,0,0],[0,0,0,1,1,0,0],[1,3,1,1,3,1,0],[3,0,1,3,3,0,0],[1,0,0,0,1,0,0],[1,1,1,1,4,0,0],[1,1,1,1,0,0,0],[0,1,0,0,1,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+
+// Build weeks with year info
+const YEARS = [2021,2022,2023,2024,2025,2026];
+const YB = [0,53,106,159,212,265,318];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function weekYear(wi) {
+  for (let i=0;i<YEARS.length;i++) if (wi < YB[i+1]) return YEARS[i];
+  return 2026;
+}
+function weekLabel(wi) {
+  const yr = weekYear(wi);
+  const wInYear = wi - YB[YEARS.indexOf(yr)];
+  const mo = MONTHS[Math.min(11, Math.floor(wInYear*12/53))];
+  return `${yr} · ${mo} · week ${wInYear+1}`;
+}
+
+// ── SCALES ────────────────────────────────────────────────────────────────
+const SCALES = {
+  dorian:     [0,2,3,5,7,9,10,12,14,15],
+  minor:      [0,2,3,5,7,8,10,12,14,15],
+  pentatonic: [0,2,4,7,9,12,14,16,19],
+  major:      [0,2,4,5,7,9,11,12,14,16],
+  chromatic:  [0,1,2,3,4,5,6,7,8,9,10,11]
+};
+const GH = ['#ebedf0','#9be9a8','#40c463','#30a14e','#216e39'];
+const SQ=12, GAP=3, PL=32, PT=24, DAYS=7;
+
+// ── AUDIO ────────────────────────────────────────────────────────────────
+let audioCtx=null, convolver=null, playInterval=null, curCol=-1;
+
+function getCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    buildReverb();
+  }
+  return audioCtx;
+}
+
+async function buildReverb() {
+  const ctx=audioCtx, rate=ctx.sampleRate, len=Math.floor(rate*2.5);
+  const buf=ctx.createBuffer(2,len,rate);
+  for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2);}
+  convolver=ctx.createConvolver();
+  convolver.buffer=buf;
+  convolver.connect(ctx.destination);
+}
+
+function playCol(wi) {
+  const ctx=getCtx();
+  const scale=SCALES['dorian'];
+  const type='sine';
+  const vol=parseInt(document.getElementById('volume').value)/100*0.42;
+  const rev=0.4;
+  const now=ctx.currentTime+0.02;
+  const BASE=48;
+  const week=RAW_WEEKS[wi];
+  week.forEach((level,d)=>{
+    if(!level) return;
+    const si=Math.min((level-1)*2+Math.floor(d/2),scale.length-1);
+    const midi=BASE+scale[si]+(d>=4?3:0);
+    const freq=440*Math.pow(2,(midi-69)/12);
+    const dur=0.2+level*0.1;
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type=type;
+    osc.frequency.setValueAtTime(freq,now);
+    gain.gain.setValueAtTime(0,now);
+    gain.gain.linearRampToValueAtTime(vol*(0.4+level*0.15),now+0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+dur);
+    osc.connect(gain);
+    const dry=ctx.createGain(), wet=ctx.createGain();
+    dry.gain.value=1-rev*0.65; wet.gain.value=rev*0.45;
+    gain.connect(dry); dry.connect(ctx.destination);
+    if(convolver){gain.connect(wet);wet.connect(convolver);}
+    const t=now+d*0.03;
+    osc.start(t); osc.stop(t+dur+0.1);
+  });
+}
+
+// ── CANVAS ────────────────────────────────────────────────────────────────
+const canvas=document.getElementById('grid-canvas');
+const c2=canvas.getContext('2d');
+const totalWeeks=RAW_WEEKS.length;
+
+function drawGrid(hl) {
+  const W=PL+totalWeeks*(SQ+GAP)+4;
+  const H=PT+DAYS*(SQ+GAP)+18;
+  canvas.width=W; canvas.height=H;
+  c2.clearRect(0,0,W,H);
+
+  // day labels
+  ['Mon','','Wed','','Fri','','Sun'].forEach((l,d)=>{
+    if(!l) return;
+    c2.font='9px "DM Mono",monospace';
+    c2.fillStyle='rgba(138,134,128,0.7)';
+    c2.fillText(l, 0, PT+d*(SQ+GAP)+SQ*0.75);
+  });
+
+  // year labels + dividers
+  YEARS.forEach((yr,yi)=>{
+    const wi=YB[yi];
+    const x=PL+wi*(SQ+GAP);
+    c2.font='9px "DM Mono",monospace';
+    c2.fillStyle='rgba(45,106,79,0.5)';
+    c2.fillText(String(yr), x, PT-7);
+    if(yi>0){
+      c2.strokeStyle='rgba(45,106,79,0.15)'; c2.lineWidth=1;
+      c2.setLineDash([2,3]);
+      c2.beginPath(); c2.moveTo(x-1,PT-2); c2.lineTo(x-1,PT+DAYS*(SQ+GAP)); c2.stroke();
+      c2.setLineDash([]);
+    }
+  });
+
+  // cells
+  for(let w=0;w<totalWeeks;w++){
+    for(let d=0;d<DAYS;d++){
+      const x=PL+w*(SQ+GAP), y=PT+d*(SQ+GAP);
+      const level=RAW_WEEKS[w][d];
+      const isHL=w===hl;
+      c2.globalAlpha=hl>=0 ? (isHL?1:0.28) : 0.88;
+      c2.fillStyle=GH[level];
+      c2.beginPath(); c2.roundRect(x,y,SQ,SQ,2); c2.fill();
+      if(isHL){
+        c2.strokeStyle=level>0?'rgba(45,106,79,0.9)':'rgba(45,106,79,0.3)';
+        c2.lineWidth=1.5; c2.stroke();
+      }
+    }
+  }
+  c2.globalAlpha=1;
+
+  // playhead
+  if(hl>=0){
+    const x=PL+hl*(SQ+GAP)+SQ/2;
+    c2.strokeStyle='rgba(45,106,79,0.7)'; c2.lineWidth=2;
+    c2.beginPath(); c2.moveTo(x,PT-4); c2.lineTo(x,PT+DAYS*(SQ+GAP)+4); c2.stroke();
+  }
+}
+
+function scrollToWeek(wi) {
+  const container = document.querySelector('.grid-scroll');
+  const x = PL + wi * (SQ + GAP);
+  const cw = container.clientWidth;
+  const target = x - cw / 2 + SQ / 2;
+  container.scrollLeft = Math.max(0, target);
+}
+
+function colFrom(ex) {
+  const r=canvas.getBoundingClientRect(), sc=canvas.width/r.width;
+  return Math.floor(((ex-r.left)*sc-PL)/(SQ+GAP));
+}
+
+canvas.addEventListener('mousemove',e=>{
+  if(playInterval) return;
+  const col=colFrom(e.clientX);
+  if(col>=0&&col<totalWeeks){ drawGrid(col); showInfo(col); }
+});
+canvas.addEventListener('mouseleave',()=>{ if(!playInterval){drawGrid(curCol);document.getElementById('week-info').classList.remove('lit');}});
+canvas.addEventListener('click',e=>{
+  const col=colFrom(e.clientX);
+  if(col>=0&&col<totalWeeks){
+    getCtx(); if(audioCtx.state==='suspended')audioCtx.resume();
+    curCol=col; drawGrid(col); showInfo(col); playCol(col);
+    document.getElementById('np-val').textContent=weekLabel(col);
+  }
+});
+
+function showInfo(wi) {
+  const w=RAW_WEEKS[wi];
+  const active=w.filter(v=>v>0).length;
+  const silent=7-active;
+  const yr=weekYear(wi);
+  const density=['empty','sparse','moderate','active','intense'][Math.min(4,Math.round(w.reduce((a,b)=>a+b,0)/3))];
+  document.getElementById('week-info').textContent=`${weekLabel(wi)}  ·  ${density}  ·  ${silent} silent day${silent!==1?'s':''}`;
+  document.getElementById('week-info').classList.add('lit');
+}
+
+// ── PLAYBACK ────────────────────────────────────────────────────────────
+document.getElementById('btn-play').addEventListener('click',()=>{
+  if(playInterval) return;
+  getCtx(); if(audioCtx.state==='suspended')audioCtx.resume();
+  let col=0;
+  const ms=Math.round(2200/8);
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-stop').disabled=false;
+  document.getElementById('btn-play').innerHTML='<span class="pdot"></span>Playing…';
+  playInterval=setInterval(()=>{
+    if(col>=totalWeeks){stopPlay();document.getElementById('np-val').textContent='— finished —';return;}
+    curCol=col; drawGrid(col); showInfo(col); playCol(col); scrollToWeek(col);
+    document.getElementById('np-val').textContent=weekLabel(col);
+    document.getElementById('prog').style.width=((col/(totalWeeks-1))*100)+'%';
+    col++;
+  }, ms);
+});
+
+document.getElementById('btn-stop').addEventListener('click',stopPlay);
+
+function stopPlay(){
+  if(playInterval){clearInterval(playInterval);playInterval=null;}
+  document.getElementById('btn-play').disabled=false;
+  document.getElementById('btn-stop').disabled=true;
+  document.getElementById('btn-play').innerHTML='▶ Play all years';
+  curCol=-1; drawGrid(-1);
+  document.getElementById('prog').style.width='0%';
+}
+
+// ── RANGE LABELS ────────────────────────────────────────────────────────
+['volume'].forEach(id=>{
+  const el=document.getElementById(id), out=document.getElementById(id+'-v');
+  el.addEventListener('input',()=>out.textContent=el.value);
+});
+
+// ── INIT ────────────────────────────────────────────────────────────────
+drawGrid(-1);
+
+// Auto-play on first user interaction (browser requires gesture for AudioContext)
+document.addEventListener('click', function autoStart() {
+  document.removeEventListener('click', autoStart);
+  document.getElementById('btn-play').click();
+}, { once: true });
+</script>
+</body>
+</html>
